@@ -4,7 +4,7 @@ class Calculator
     def calculate(amount, months, percent, kind)
       if kind == 'anuitet'
         anuitet(amount, months, percent)
-      else
+      elsif kind == 'differential'
         differential(amount, months, percent)
       end
     end
@@ -22,13 +22,15 @@ class Calculator
           np = (balance * (percent.to_f / (100 * 12)))
           np_total += np
           od = ap - np
+          balance = balance - od
+          balance = balance > 0 ? balance : 0
           payments[:months] << { np: np.round(2), od: od.round(2),
                                  od_plus_np: ap, balance: balance.round(2) }
-          balance = balance - od
         end
 
         payments[:np_total] = np_total.round(2)
         payments[:np_total_plus_amount] = (np_total + amount.to_f).round(2)
+        payments[:amount] = amount.to_f
         payments
       end
 
@@ -41,13 +43,15 @@ class Calculator
         months.to_i.times do
           np = (balance * (percent.to_f / (100 * 12)))
           np_total += np
+          balance = balance - od
+          balance = balance > 0 ? balance : 0
           payments[:months] << { np: np.round(2), od: od.round(2),
                                  od_plus_np: (np + od).round(2), balance: balance.round(2) }
-          balance = balance - od
         end
 
         payments[:np_total] = np_total.round(2)
         payments[:np_total_plus_amount] = (np_total + amount.to_f).round(2)
+        payments[:amount] = amount.to_f
         payments
       end
   end

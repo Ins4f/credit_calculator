@@ -6,6 +6,7 @@ class CreditCalculatorController < ApplicationController
 
   def calculate
     @result = Calculator.calculate(params[:amount], params[:months], params[:percent], params[:kind])
+    @current_date = Date.current
     render :show
   end
 
