@@ -1,10 +1,10 @@
 <%= form_tag({ controller: :credit_calculator, action: :calculate }, { method: :get, class: :credit_calculator_form }) do %>
-    <%= number_field(nil, :amount, in: 1..1000000000, step: 1, placeholder: params[:amount]) %> Cумма <br><br>
-    <%= number_field(nil, :months, in: 1..300, step: 1, placeholder: params[:months]) %> Срок <br><br>
-    <%= number_field(nil, :percent, in: 0.1..100, step: 0.1, placeholder: params[:percent]) %> Процентная ставка <br><br>
-    <%= radio_button_tag(:kind, :anuitet) %>
+    <%= number_field(nil, :amount, in: 1..1000000000, step: 1, value: @amount, ) %> Cумма <br><br>
+    <%= number_field(nil, :months, in: 1..300, step: 1, value: @months) %> Срок (Мясяцев) <br><br>
+    <%= number_field(nil, :percent, in: 0.1..100, step: 0.1, value: @percent) %> Процентная ставка <br><br>
+    <%= radio_button_tag(:kind, :anuitet, @kind == 'anuitet') %>
     <%= label_tag(:age_child, "аннуитетный") %>
-    <%= radio_button_tag(:kind, :differential) %>
+    <%= radio_button_tag(:kind, :differential, @kind == 'differential') %>
     <%= label_tag(:age_adult, "дифференцированный") %> <br>
     <%= submit_tag("Расчитать") %>
 <% end %>
@@ -12,6 +12,7 @@
 <br>
 <br>
 <br>
+
 
 <div class="credit_calculator_result">
   <% if @result %>
@@ -33,20 +34,20 @@
             <% if index % 2 == 0 %>
                 <tr bgcolor="#f5f5f5">
                     <td align="center"><%= index + 1 %></td>
-                    <td align="center"><%= (@current_date + index.months) %></td>
-                    <td align="center"><%= month[:od_plus_np] %>&nbsp;</td>
-                    <td align="center"><%= month[:od] %></td>
-                    <td align="center"><%= month[:np] %></td>
-                    <td align="center"><%= month[:balance] %></td>
+                    <td align="center"><%= (@current_date + index.months + 1) %></td>
+                    <td align="center"><%= @round % month[:od_plus_np] %>&nbsp;</td>
+                    <td align="center"><%= @round % month[:od] %></td>
+                    <td align="center"><%= @round % month[:np] %></td>
+                    <td align="center"><%= @round % month[:balance] %></td>
                 </tr>
             <% else %>
                 <tr bgcolor="#b0c4de">
                     <td align="center"><%= index + 1 %></td>
                     <td align="center"><%= (@current_date + index.months) %></td>
-                    <td align="center"><%= month[:od_plus_np] %>&nbsp;</td>
-                    <td align="center"><%= month[:od] %></td>
-                    <td align="center"><%= month[:np] %></td>
-                    <td align="center"><%= month[:balance] %></td>
+                    <td align="center"><%= @round % month[:od_plus_np] %>&nbsp;</td>
+                    <td align="center"><%= @round % month[:od] %></td>
+                    <td align="center"><%= @round % month[:np] %></td>
+                    <td align="center"><%= @round % month[:balance] %></td>
                 </tr>
             <% end %>
         <% end %>
@@ -54,9 +55,9 @@
 
         <tr bgcolor="#f5f5f5">
           <td colspan="2" align="left" class="t-nizlevo">Итого по кредиту </td>
-          <td align="center"><%= @result[:np_total_plus_amount] %></td>
-          <td align="center"><%= @result[:amount] %></td>
-          <td align="center"><%= @result[:np_total] %>&nbsp;</td>
+          <td align="center"><%= @round % @result[:np_total_plus_amount] %></td>
+          <td align="center"><%= @round % @result[:amount] %></td>
+          <td align="center"><%= @round % @result[:np_total] %>&nbsp;</td>
           <td align="center" class="t-nizpravo">&nbsp;</td>
         </tr>
         </tbody></table>
